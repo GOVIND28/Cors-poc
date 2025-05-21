@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cludo API Tester</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #333;
+    }
+    label, input, button {
+      font-size: 16px;
+    }
+    input[type="text"] {
+      width: 300px;
+      padding: 8px;
+    }
+    button {
+      padding: 8px 16px;
+      margin-left: 10px;
+    }
+    pre {
+      background: #222;
+      color: #0f0;
+      padding: 20px;
+      overflow: auto;
+      margin-top: 20px;
+      border-radius: 5px;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Cludo API Tester</h1>
+
+  <label for="query">Enter search query:</label>
+  <input type="text" id="query" placeholder="e.g. test" />
+  <button onclick="searchCludo()">Search</button>
+
+  <div id="output"></div>
+
+  <script>
+    const apiUrl = "https://api-us1.cludo.com/api/v3/10000064/10000072/search";
+    const siteKey = "SiteKey MTAwMDAwNjQ6MTAwMDAwNzI6U2VhcmNoS2V5";  // Replace with your actual SiteKey
+
+    function searchCludo() {
+      const query = document.getElementById("query").value;
+      const outputDiv = document.getElementById("output");
+      outputDiv.innerHTML = "Loading...";
+
+      const postData = {
+        query: query,
+        size: 10
+      };
+
+      fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Authorization": siteKey,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(postData),
+        mode: "cors",
+        credentials: "omit"
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("HTTP error " + response.status);
+        }
+        return response.json();
+      })
+      .then(data => {
+        outputDiv.innerHTML = `<h3>Response:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+      })
+      .catch(error => {
+        console.error("Fetch error:", error);
+        outputDiv.innerHTML = `<p class="error">Error fetching data or blocked by CORS. Check console for details.</p>`;
+      });
+    }
+  </script>
+
+</body>
+</html>
